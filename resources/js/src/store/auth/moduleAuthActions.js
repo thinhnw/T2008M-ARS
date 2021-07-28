@@ -339,9 +339,10 @@ export default {
       if (password !== confirmPassword) {
         reject({message: 'Password doesn\'t match. Please try again.'})
       }
-
+      console.log('HENLO')
       jwt.registerUser(displayName, email, password)
         .then(response => {
+          console.log('RESPONSE', response)
           // Redirect User
           router.push(router.currentRoute.query.to || '/')
 

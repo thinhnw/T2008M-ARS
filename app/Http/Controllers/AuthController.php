@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -14,7 +18,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('JWT', ['except' => ['login', 'register']]);
     }
 
     /**
@@ -26,7 +30,7 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = Auth::auth()->attempt($credentials)) {
+        if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -50,7 +54,7 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        Auth::auth()->logout();
+        auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
@@ -62,7 +66,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(Auth::auth()->refresh());
+        return $this->respondWithToken(auth()->refresh());
     }
 
     /**
@@ -77,7 +81,28 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 60
         ]);
+    }
+
+    public function register(Request $request) {
+        try {
+            $request->validate([
+                'email' => ['required', 'unique:users' , 'max:255'],
+                'name' => 'required',
+                'password' => ['required' , 'min:6']
+            ]);
+            $data = array();
+            $data['name'] = $request->name;
+            $data['email'] = $request->email;
+            $data['password'] = Hash::make($request->password);
+
+            DB::table('users')->insert($data);
+            return $this->login($request);
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 200);
+        }
     }
 }

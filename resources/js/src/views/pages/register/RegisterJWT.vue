@@ -11,7 +11,7 @@ Author URL: http://www.themeforest.net/user/pixinvent
 <template>
   <div class="clearfix">
     <vs-input
-      v-validate="'required|alpha_dash|min:3'"
+      v-validate="'required|alpha_spaces|min:3'"
       data-vv-validate-on="blur"
       label-placeholder="Name"
       name="displayName"
@@ -112,6 +112,9 @@ export default {
       }
       this.$store.dispatch('auth/registerUserJWT', payload)
     }
+  },
+  mounted() {
+    console.log(this.checkLogin())
   }
 }
 </script>
