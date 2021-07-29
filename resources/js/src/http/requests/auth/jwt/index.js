@@ -45,10 +45,15 @@ export default {
     })
   },
   login (email, pwd) {
+    console.log('LOGIN')
     return axios.post('/api/auth/login', {
       email,
       password: pwd
     })
+  },
+  logout() {
+    console.log('LOGOUT')
+    return axios.post('/api/auth/logout')
   },
   registerUser (name, email, password) {
     console.log('REGISTER')
