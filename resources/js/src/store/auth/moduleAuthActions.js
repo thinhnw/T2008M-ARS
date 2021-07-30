@@ -54,12 +54,13 @@ export default {
 
             // Set accessToken
             localStorage.setItem('accessToken', response.data.access_token)
+            // Set bearer token in axios
+            commit('SET_BEARER', response.data.access_token)
 
             // Update user details
             commit('UPDATE_USER_INFO', response.data.userInfo)
+            localStorage.setItem('userInfo', JSON.stringify(response.data.userInfo || {}))
 
-            // Set bearer token in axios
-            commit('SET_BEARER', response.data.access_token)
 
             // Navigate User to homepage
             router.push(router.currentRoute.query.to || '/')

@@ -69,6 +69,26 @@ const router = new Router({
           }
         },
 
+        {
+          path: '/admin',
+          redirect: '/admin/login',
+          meta: {
+            rule: 'isPublic'
+          },
+          children: [
+            {
+              path: '/login',
+              name: 'admin-login',
+              component: () => import('./views/airline-reservation/login/Login.vue'),
+            },
+            {
+              path: '/dashboard',
+              name: 'admin-dashboard',
+              component: () => import('./views/DashboardAnalytics.vue'),
+            }
+          ]
+        },
+
 
 /* CAI MINH CAN CODE DEN DAY THOI, PHAN DUOI CHI DE THAM KHAO 
 * CAI MINH CAN CODE DEN DAY THOI, PHAN DUOI CHI DE THAM KHAO 
